@@ -71,14 +71,14 @@ def button1_clicked():
    print("Button 1 clicked")
 
 if __name__ == '__main__':
-   #window()
+    window()
+
+#    app = QApplication(sys.argv)
+#    ex = PushButton()
+#    ex.show()
+#    sys.exit(app.exec_()) 
 
    #app = QApplication(sys.argv)
-   #ex = PushButton()
-   #ex.show()
-   #sys.exit(app.exec_()) 
-
-   app = QApplication(sys.argv)
-   ex = ToolButton()
-   ex.show()
-   sys.exit(app.exec_()) 
+#    ex = ToolButton()
+#    ex.show()
+#    sys.exit(app.exec_()) 
