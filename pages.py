@@ -5,30 +5,10 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtCore import Qt
 
-
-# Machine to HMI (To showcase whether an error has occurred) (Hard-coded for now)
-# Global variables
-start_up_flag = 1
-roll_flag = 1
-orient_flag = 1
-place_flag = 1
-load_flag = 1
-full = 0
-
-class Pages:
-    MAIN = 1
-    IN_USE = 2
-    DONE = 3
-
-def run_app():
-    app = QApplication(sys.argv)
-    splash = SplashScreen()
-    time.sleep(1) # fake ready signal after 1 secs
-    w = ReorientationApp()
-    w.show()
-    splash.finish(w)
-    app.exec()
-
+class STATES:
+    MAIN = 2
+    IN_USE = 3
+    DONE = 4
 
 class ReorientationApp(QMainWindow):
     def __init__(self):
@@ -56,7 +36,11 @@ class SplashScreen():
         # super(SplashScreen,self).__init__()
         pixmap = QPixmap("./rob.jpg")
         self.splash = QSplashScreen(pixmap)
+
+    def startUp(self):
         self.splash.show()
+        time.sleep(1)
+        return True
 
     def finish(self, window):
         self.splash.finish(window)
@@ -107,10 +91,3 @@ class ErrorDisplay(QFrame):
         textLabel = QLabel(widget)
         textLabel.setText("Machine in use")
         textLabel.move(64,85)
-# #         if start_up_flag == 1 and roll_flag == 1 and orient_flag == 1 and place_flag == 1 and load_flag == 1 and full != 1:
-# #             # Everything is normal
-# #             textLabel.setText("Machine in Use")
-
-
-if __name__ == '__main__':
-    run_app()
