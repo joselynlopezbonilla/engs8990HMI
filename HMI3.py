@@ -128,7 +128,5 @@ class ErrorDisplay(QFrame):
     def proceed(self):
         print ("Call Enter Key")
 
-
-
 if __name__ == '__main__':
     run_app()
