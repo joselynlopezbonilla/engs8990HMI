@@ -1,0 +1,29 @@
+        #Three errors
+        #Sees part and doesnt notice there's a part there (failure to feed) (Yellow errors)
+        #There's a part but its on its side/ something wrong with  the light that it can't detect chamfer (Yellow)
+        #Camera subsystem error
+            #Initlization can be wrong and cannot start pulling images (Fatal error)
+        #Carrier 
+        #Carrier full, 
+        #Status symbol to from the HMI to the identification system whether is chamofer ide up or chamfer side down
+        # ENUM should align with the state machine we've presented
+
+        #Three different threads on python
+            #One for HMI, gantry, and vision
+            #MPS Seat Bus
+            #Multiprocessing library Q
+
+        #HMI will be conversing with vision and gantry
+
+        #Three threads (almost like a V formation)
+
+        #Create an object that conatins constant of each of the different errors (enum)
+
+        #Add a current sensor  for actuator in the the flipping mechanism so that the HMI will know that the motor
+        #has jammed
+        #ENUM with success messages 
+
+        #Create a 7 inch display
+
+        #ENUM stuff with the errors and success 
+        #Noah will create a mini thread and I will try to integrate that with the current code

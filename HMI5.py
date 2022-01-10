@@ -39,7 +39,9 @@ class ReorientationApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("QGridLayout Example")
-        self.showFullScreen()
+        #self.showFullScreen()
+        self.setFixedWidth(1000)
+        self.setFixedHeight(550)
         # Create a QGridLayout instance
         layout = QGridLayout()
         # Add widgets to the layout
