@@ -20,9 +20,9 @@ class ReorientationApp(QMainWindow):
         widget = MainPage(self.changeWidget)
 
         self.setCentralWidget(widget)
-        #self.showFullScreen()
-        self.setFixedWidth(1000)
-        self.setFixedHeight(550)
+        self.showFullScreen()
+        # self.setFixedWidth(1000)
+        # self.setFixedHeight(550)
         self.setWindowTitle("Reorientation Machine")
 
     def changeWidget(self, widget):
@@ -76,32 +76,32 @@ class MainPage(QFrame):
         textLabel.setText("Start Up Completed")
         textLabel.move(64,85)
         font = textLabel.font()
-        font.setPointSize(20)
+        font.setPointSize(50)
         textLabel.setFont(font)
         textLabel.adjustSize() #seems like a bad idea
 
         self.button1 = QPushButton(self)
         self.button1.setText("Chamfer Side-Up")
-        self.button1.move(64,200)
+        self.button1.move(64,500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
         border-radius: 10px; \
         border-color: beige; \
-        font: bold 22px; \
+        font: bold 50px; \
         min-width: 10em; \
         padding: 6px;")
         self.button1.clicked.connect(self.button1_clicked)
 
         self.button2 = QPushButton(self)
         self.button2.setText("Chamfer Side-Down")
-        self.button2.move(64,300)
+        self.button2.move(64,800)
         self.button2.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
         border-radius: 10px; \
         border-color: beige; \
-        font: bold 22px; \
+        font: bold 50px; \
         min-width: 10em; \
         padding: 6px;")
         self.button2.clicked.connect(self.button2_clicked)
@@ -129,7 +129,7 @@ class ErrorDisplay(QFrame):
         textLabel.setText("Machine in use")
         textLabel.move(64,85)
         font = textLabel.font()
-        font.setPointSize(15)
+        font.setPointSize(50)
         textLabel.setFont(font) 
         textLabel.adjustSize() 
 
@@ -139,22 +139,30 @@ class RollingDisplay(QFrame):
         self.callback = callback
         widget = QWidget(self)
         textLabel = QLabel(widget)
-        textLabel.setText("Error: Part cannot be placed in rolling manner. Please fix.")
+        textLabel.setText("Error: Part cannot be placed in rolling manner.")
         textLabel.move(64,85)
         font = textLabel.font()
-        font.setPointSize(15)
+        font.setPointSize(40)
         textLabel.setFont(font) 
         textLabel.adjustSize()
 
+        textLabel1 = QLabel(widget)
+        textLabel1.setText("Please fix.")
+        textLabel1.move(64,200) 
+        font = textLabel1.font()
+        font.setPointSize(40)
+        textLabel1.setFont(font)
+        textLabel1.adjustSize()
+
         self.button1 = QPushButton(self)
         self.button1.setText("Error has been cleared.")
-        self.button1.move(64,200)
+        self.button1.move(64,500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
         border-radius: 10px; \
         border-color: beige; \
-        font: bold 22px; \
+        font: bold 50px; \
         min-width: 10em; \
         padding: 6px;")
         self.button1.clicked.connect(self.button1_clicked)
@@ -172,27 +180,27 @@ class OrientDisplay(QFrame):
         textLabel.setText("Warning: Part cannot be oriented appropriately.")
         textLabel.move(64,85) 
         font = textLabel.font()
-        font.setPointSize(15)
+        font.setPointSize(40)
         textLabel.setFont(font)
         textLabel.adjustSize()
 
         textLabel1 = QLabel(widget)
         textLabel1.setText("No chamfer can be detected.")
-        textLabel1.move(64,120) 
+        textLabel1.move(64,200) 
         font = textLabel1.font()
-        font.setPointSize(15)
+        font.setPointSize(40)
         textLabel1.setFont(font)
         textLabel1.adjustSize()
 
         self.button1 = QPushButton(self)
         self.button1.setText("Understood.")
-        self.button1.move(64,200)
+        self.button1.move(64,500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
         border-radius: 10px; \
         border-color: beige; \
-        font: bold 22px; \
+        font: bold 50px; \
         min-width: 10em; \
         padding: 6px;")
         self.button1.clicked.connect(self.button1_clicked)
@@ -210,19 +218,19 @@ class PlacingDisplay(QFrame):
         textLabel.setText("Error: Pick and place subsystem cannot place part onto tray")
         textLabel.move(64,85) 
         font = textLabel.font()
-        font.setPointSize(15)
+        font.setPointSize(40)
         textLabel.setFont(font)
         textLabel.adjustSize()
 
         self.button1 = QPushButton(self)
         self.button1.setText("Error has been cleared.")
-        self.button1.move(64,200)
+        self.button1.move(64,500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
         border-radius: 10px; \
         border-color: beige; \
-        font: bold 22px; \
+        font: bold 50px; \
         min-width: 10em; \
         padding: 6px;")
         self.button1.clicked.connect(self.button1_clicked)
@@ -237,30 +245,30 @@ class FullDisplay(QFrame):
         self.callback = callback
         widget = QWidget(self)
         textLabel = QLabel(widget)
-        textLabel.setText("Finish: Pick and place subsystem has loaded full tray.")
+        textLabel.setText("Finish: Pick and place subsystem loaded full tray.")
         textLabel.move(64,85) 
         font = textLabel.font()
-        font.setPointSize(15)
+        font.setPointSize(40)
         textLabel.setFont(font)
         textLabel.adjustSize()
 
         textLabel1 = QLabel(widget)
         textLabel1.setText("Please load empty tray.")
-        textLabel1.move(64,120) 
+        textLabel1.move(64,200) 
         font = textLabel1.font()
-        font.setPointSize(15)
+        font.setPointSize(40)
         textLabel1.setFont(font)
         textLabel1.adjustSize()
 
         self.button1 = QPushButton(self)
         self.button1.setText("New empty tray loaded")
-        self.button1.move(64,200)
+        self.button1.move(64,500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
         border-radius: 10px; \
         border-color: beige; \
-        font: bold 22px; \
+        font: bold 50px; \
         min-width: 10em; \
         padding: 6px;")
         self.button1.clicked.connect(self.button1_clicked)
