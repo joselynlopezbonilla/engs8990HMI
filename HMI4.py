@@ -1,7 +1,7 @@
 import sys
 import time
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QToolButton, QMainWindow, QSplashScreen, QFrame
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QColor, QPalette
 from PyQt5.QtCore import Qt
 
 def run_app():
@@ -68,7 +68,7 @@ class SplashScreen():
 
 
 class MainPage(QFrame):
-    def __init__(self, callback):
+    def __init__(self, callback, color=QColor("green")):
         super(MainPage,self).__init__()
         self.callback = callback
         widget = QWidget(self)
@@ -79,10 +79,19 @@ class MainPage(QFrame):
         font.setPointSize(50)
         textLabel.setFont(font)
         textLabel.adjustSize() #seems like a bad idea
+        #widget.setStyleSheet(" background-color: rgb(43, 135, 42);")
+        self.setColor(color)
+
+    def setColor(self, color):
+        pal = self.palette()
+        pal.setColor(QPalette.WindowText, color)
+        self.setPalette(pal)
+        
 
         self.button1 = QPushButton(self)
         self.button1.setText("Chamfer Side-Up")
-        self.button1.move(64,500)
+        self.button1.move(200,500)
+        self.button1.resize(150, 500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
@@ -95,7 +104,8 @@ class MainPage(QFrame):
 
         self.button2 = QPushButton(self)
         self.button2.setText("Chamfer Side-Down")
-        self.button2.move(64,800)
+        self.button2.move(1100,500)
+        self.button2.resize(150, 500)
         self.button2.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
@@ -122,7 +132,7 @@ class MainPage(QFrame):
 
 # Using Keyboard strokes to represent signals coming from the machine
 class ErrorDisplay(QFrame):
-    def __init__(self,):
+    def __init__(self, color=QColor("green")):
         super(ErrorDisplay,self).__init__()
         widget = QWidget(self)
         textLabel = QLabel(widget)
@@ -131,10 +141,16 @@ class ErrorDisplay(QFrame):
         font = textLabel.font()
         font.setPointSize(50)
         textLabel.setFont(font) 
-        textLabel.adjustSize() 
+        textLabel.adjustSize()
+        self.setColor(color)
+
+    def setColor(self, color):
+        pal = self.palette()
+        pal.setColor(QPalette.WindowText, color)
+        self.setPalette(pal)
 
 class RollingDisplay(QFrame):
-    def __init__(self, callback):
+    def __init__(self, callback, color=QColor("red")):
         super(RollingDisplay,self).__init__()
         self.callback = callback
         widget = QWidget(self)
@@ -145,6 +161,7 @@ class RollingDisplay(QFrame):
         font.setPointSize(40)
         textLabel.setFont(font) 
         textLabel.adjustSize()
+        self.setColor(color)
 
         textLabel1 = QLabel(widget)
         textLabel1.setText("Please fix.")
@@ -156,7 +173,8 @@ class RollingDisplay(QFrame):
 
         self.button1 = QPushButton(self)
         self.button1.setText("Error has been cleared.")
-        self.button1.move(64,500)
+        self.button1.move(600,500)
+        self.button1.resize(150, 500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
@@ -171,8 +189,13 @@ class RollingDisplay(QFrame):
         widget = ErrorDisplay()
         self.callback(widget)
 
+    def setColor(self, color):
+        pal = self.palette()
+        pal.setColor(QPalette.WindowText, color)
+        self.setPalette(pal)
+
 class OrientDisplay(QFrame):
-    def __init__(self, callback):
+    def __init__(self, callback, color=QColor("orange")):
         super(OrientDisplay,self).__init__()
         self.callback = callback
         widget = QWidget(self)
@@ -183,6 +206,7 @@ class OrientDisplay(QFrame):
         font.setPointSize(40)
         textLabel.setFont(font)
         textLabel.adjustSize()
+        self.setColor(color)
 
         textLabel1 = QLabel(widget)
         textLabel1.setText("No chamfer can be detected.")
@@ -194,7 +218,8 @@ class OrientDisplay(QFrame):
 
         self.button1 = QPushButton(self)
         self.button1.setText("Understood.")
-        self.button1.move(64,500)
+        self.button1.move(600,500)
+        self.button1.resize(150, 500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
@@ -209,22 +234,37 @@ class OrientDisplay(QFrame):
         widget = ErrorDisplay()
         self.callback(widget)
 
+    def setColor(self, color):
+        pal = self.palette()
+        pal.setColor(QPalette.WindowText, color)
+        self.setPalette(pal)
+
 class PlacingDisplay(QFrame):
-    def __init__(self, callback):
+    def __init__(self, callback, color=QColor("red")):
         super(PlacingDisplay,self).__init__()
         self.callback = callback
         widget = QWidget(self)
         textLabel = QLabel(widget)
-        textLabel.setText("Error: Pick and place subsystem cannot place part onto tray")
+        textLabel.setText("Error: Pick and place subsystem cannot place part")
         textLabel.move(64,85) 
         font = textLabel.font()
         font.setPointSize(40)
         textLabel.setFont(font)
         textLabel.adjustSize()
+        self.setColor(color)
+
+        textLabel1 = QLabel(widget)
+        textLabel1.setText("onto tray.")
+        textLabel1.move(64,200) 
+        font = textLabel1.font()
+        font.setPointSize(40)
+        textLabel1.setFont(font)
+        textLabel1.adjustSize()
 
         self.button1 = QPushButton(self)
         self.button1.setText("Error has been cleared.")
-        self.button1.move(64,500)
+        self.button1.move(600,500)
+        self.button1.resize(150, 500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
@@ -239,8 +279,13 @@ class PlacingDisplay(QFrame):
         widget = ErrorDisplay()
         self.callback(widget)
 
+    def setColor(self, color):
+        pal = self.palette()
+        pal.setColor(QPalette.WindowText, color)
+        self.setPalette(pal)
+
 class FullDisplay(QFrame):
-    def __init__(self, callback):
+    def __init__(self, callback, color=QColor("blue")):
         super(FullDisplay,self).__init__()
         self.callback = callback
         widget = QWidget(self)
@@ -251,6 +296,7 @@ class FullDisplay(QFrame):
         font.setPointSize(40)
         textLabel.setFont(font)
         textLabel.adjustSize()
+        self.setColor(color)
 
         textLabel1 = QLabel(widget)
         textLabel1.setText("Please load empty tray.")
@@ -262,7 +308,8 @@ class FullDisplay(QFrame):
 
         self.button1 = QPushButton(self)
         self.button1.setText("New empty tray loaded")
-        self.button1.move(64,500)
+        self.button1.move(600,500)
+        self.button1.resize(150, 500)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
         border-width: 2px;\
@@ -277,17 +324,28 @@ class FullDisplay(QFrame):
         widget = ErrorDisplay()
         self.callback(widget)
 
+    def setColor(self, color):
+        pal = self.palette()
+        pal.setColor(QPalette.WindowText, color)
+        self.setPalette(pal)
+
 class EmerStopDisplay(QFrame):
-    def __init__(self):
+    def __init__(self, color=QColor("red")):
         super(EmerStopDisplay,self).__init__()
         widget = QWidget(self)
         textLabel = QLabel(widget)
         textLabel.setText("Emergency Stop")
         textLabel.move(64,85)
         font = textLabel.font()
-        font.setPointSize(15)
+        font.setPointSize(50)
         textLabel.setFont(font)
         textLabel.adjustSize()
+        self.setColor(color)
+
+    def setColor(self, color):
+        pal = self.palette()
+        pal.setColor(QPalette.WindowText, color)
+        self.setPalette(pal)
 
 if __name__ == '__main__':
     run_app()
