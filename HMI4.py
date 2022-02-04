@@ -15,44 +15,64 @@ button1_line=chip1.get_lines([ 9 ]) # Pin 23
 button2_line=chip1.get_lines([ 21 ]) # Pin 5
 button3_line=chip4.get_lines([ 24 ]) # Pin 7
 button4_line=chip1.get_lines([ 8 ]) # Pin 19
+button5_line=chip1.get_lines([ 11 ]) # Pin 27
+button6_line=chip4.get_lines([ 27 ]) # Pin 29
 
 LED_line.request(consumer='foobar', type=gpiod.LINE_REQ_DIR_OUT, default_vals=[ 0 ])
 button1_line.request(consumer='button1', type=gpiod.LINE_REQ_DIR_IN)
 button2_line.request(consumer='button2', type=gpiod.LINE_REQ_DIR_IN)
 button3_line.request(consumer='button3', type=gpiod.LINE_REQ_DIR_IN)
 button4_line.request(consumer='button4', type=gpiod.LINE_REQ_DIR_IN)
+button5_line.request(consumer='button5', type=gpiod.LINE_REQ_DIR_IN)
+button6_line.request(consumer='button6', type=gpiod.LINE_REQ_DIR_IN)
 
 APPLICATION = None
 ROLLING_STATUS = button1_line.get_values()[0]
 ORIENT_STATUS = button2_line.get_values()[0]
 PLACING_STATUS = button3_line.get_values()[0]
 FULL_STATUS = button4_line.get_values()[0]
+EMERGENCY_STATUS = button5_line.get_values()[0]
+PART_STATUS = button6_line.get_values()[0]
 
 def background():
-    global ROLLING_STATUS, ORIENT_STATUS, PLACING_STATUS, FULL_STATUS
+    global ROLLING_STATUS, ORIENT_STATUS, PLACING_STATUS, FULL_STATUS, EMERGENCY_STATUS, PART_STATUS
     prev_rolling = ROLLING_STATUS
     prev_orient = ORIENT_STATUS
     prev_placing = PLACING_STATUS
     prev_full = FULL_STATUS
+    prev_emergency = EMERGENCY_STATUS
+    prev_part = PART_STATUS
+
     while True:
         ROLLING_STATUS = button1_line.get_values()[0]
         ORIENT_STATUS = button2_line.get_values()[0]
         PLACING_STATUS = button3_line.get_values()[0]
         FULL_STATUS = button4_line.get_values()[0]
+        EMERGENCY_STATUS = button5_line.get_values()[0]
+        PART_STATUS = button6_line.get_values()[0]
         
         if prev_rolling != ROLLING_STATUS:
             APPLICATION.ROLL_ERROR = ROLLING_STATUS
             print("changing")
             prev_rolling = ROLLING_STATUS
         elif prev_orient != ORIENT_STATUS:
-            APPLICATION.displayOrientError(ORIENT_STATUS)
-            prev_orient = ORIENT_STATUS
-        # elif prev_placing != PLACING_STATUS:
-        #     APPLICATION.displayPlacingError(ORIENT_STATUS)
-        #     prev_placing = PLACING_STATUS
-        # elif prev_full != FULL_STATUS:
-        #     APPLICATION.displayFullTray(FULL_STATUS)
-        #     prev_full = FULL_STATUS
+            APPLICATION.ORIENT_ERROR = ORIENT_STATUS
+            print("changing")
+            prev_orient = ORIENT_STATUS        
+        elif prev_placing != PLACING_STATUS:
+            APPLICATION.PLACING_ERROR = PLACING_STATUS
+            prev_placing = PLACING_STATUS
+        elif prev_full != FULL_STATUS:
+            APPLICATION.FULL_SCREEN = FULL_STATUS
+            prev_full = FULL_STATUS
+        elif prev_emergency != EMERGENCY_STATUS:
+            APPLICATION.EMERGENCY_SCREEN = EMERGENCY_STATUS
+            print("changing")
+            prev_emergency = EMERGENCY_STATUS
+        elif prev_part != PART_STATUS:
+            APPLICATION.PART_ERROR = PART_STATUS
+            print("changing")
+            prev_part = PART_STATUS
         time.sleep(.1)
 
 def run_app():
@@ -68,12 +88,33 @@ def run_app():
 class ReorientationApp(QMainWindow):
     rolling_signal = pyqtSignal(str, int)
     ROLL = "ROLL"
+
+    orienting_signal = pyqtSignal(str, int)
+    ORIENT = "ORIENT"
+
+    placing_signal = pyqtSignal(str, int)
+    PLACING = "PLACING"
+
+    full_signal = pyqtSignal(str, int)
+    FULL = "FULL"
+
+    emergency_signal = pyqtSignal(str, int)
+    EMERGENCY = "EMERGENCY"
+
+    part_signal = pyqtSignal(str, int)
+    PART = "PART"
+
     def __init__(self):
         super(ReorientationApp, self).__init__()
         widget = MainPage(self.changeWidget)
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         self._ROLLING_STATUS = button1_line.get_values()[0]
         self.rolling_signal.connect(self.handleRMSignal)
+        self.orienting_signal.connect(self.handleOMSignal)
+        self.placing_signal.connect(self.handlePMSignal)
+        self.full_signal.connect(self.handleFMSignal)
+        self.emergency_signal.connect(self.handleEMSignal)
+        self.part_signal.connect(self.handlePartMSignal)
 
         self.setCentralWidget(widget)
         self.showFullScreen()
@@ -95,6 +136,71 @@ class ReorientationApp(QMainWindow):
     def handleRMSignal(self, name, value):
         self.displayRollingError(value)
 
+    @property
+    def ORIENT_ERROR(self):
+        return self._ORIENT_STATUS
+
+    @ORIENT_ERROR.setter
+    def ORIENT_ERROR(self, value):
+        self._ORIENT_STATUS = value
+        print("setting and emitting")
+        self.orienting_signal.emit(self.ORIENT, self._ORIENT_STATUS)
+
+    def handleOMSignal(self, name, value):
+        self.displayOrientError(value)
+
+    @property
+    def PLACING_ERROR(self):
+        return self._PLACING_STATUS
+
+    @PLACING_ERROR.setter
+    def PLACING_ERROR(self, value):
+        self._PLACING_STATUS = value
+        print("setting and emitting")
+        self.placing_signal.emit(self.PLACING, self._PLACING_STATUS)
+
+    def handlePMSignal(self, name, value):
+        self.displayPlacingError(value)
+
+    @property
+    def FULL_SCREEN(self):
+        return self._FULL_STATUS
+
+    @FULL_SCREEN.setter
+    def FULL_SCREEN(self, value):
+        self._FULL_STATUS = value
+        print("setting and emitting")
+        self.full_signal.emit(self.FULL, self._FULL_STATUS)
+
+    def handleFMSignal(self, name, value):
+        self.displayFullTray(value)
+
+    @property
+    def EMERGENCY_SCREEN(self):
+        return self._EMERGENCY_STATUS
+
+    @EMERGENCY_SCREEN.setter
+    def EMERGENCY_SCREEN(self, value):
+        self._EMERGENCY_STATUS = value
+        print("setting and emitting")
+        self.emergency_signal.emit(self.EMERGENCY, self._EMERGENCY_STATUS)
+
+    def handleEMSignal(self, name, value):
+        self.displayEmergency(value)
+
+    @property
+    def PART_ERROR(self):
+        return self._PART_STATUS
+
+    @PART_ERROR.setter
+    def PART_ERROR(self, value):
+        self._PART_STATUS = value
+        print("setting and emitting")
+        self.part_signal.emit(self.PART, self._PART_STATUS)
+
+    def handlePartMSignal(self, name, value):
+        self.displayPartError(value)
+
     def displayRollingError(self, signal):
         widget = RollingDisplay(self.changeWidget)
         widget.setStyleSheet(" background-color: rgb(171, 0, 0);")
@@ -114,6 +220,18 @@ class ReorientationApp(QMainWindow):
         widget = PlacingDisplay(self.changeWidget)
         self.setCentralWidget(widget)
         widget.setStyleSheet("background-color: rgb(171, 0, 0);")
+
+    def displayEmergency(self, signal):
+        widget = EmerStopDisplay()
+        self.setCentralWidget(widget)
+        widget.setStyleSheet(" background-color: rgb(171, 0, 0);")
+
+    def displayPartError(self, signal):
+        # Detection warning
+        # No part detected
+        widget = OrientPartDisplay(self.changeWidget)
+        self.setCentralWidget(widget)
+        widget.setStyleSheet("background-color: rgb(171, 94, 0);")
 
     # def keyPressEvent(self, event):
     #     if event.key() == Qt.Key_Q: #When Q is pressed, rolling accuracy is 0
@@ -161,9 +279,8 @@ class ReorientationApp(QMainWindow):
     #     else: 
     #         self.proceed()
     #     event.accept()
-
-    def proceed(self):
-        print ("Call Enter Key")
+    # def proceed(self):
+    #     print ("Call Enter Key")
 
 class SplashScreen():
     def __init__(self):
@@ -242,7 +359,7 @@ class ErrorDisplay(QFrame):
         widget = QWidget(self)
         textLabel = QLabel(widget)
         textLabel.setText("Machine in use")
-        textLabel.move(150,300)
+        textLabel.move(150,150)
         font = textLabel.font()
         font.setPointSize(70)
         textLabel.setFont(font) 
