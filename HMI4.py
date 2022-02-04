@@ -233,55 +233,6 @@ class ReorientationApp(QMainWindow):
         self.setCentralWidget(widget)
         widget.setStyleSheet("background-color: rgb(171, 94, 0);")
 
-    # def keyPressEvent(self, event):
-    #     if event.key() == Qt.Key_Q: #When Q is pressed, rolling accuracy is 0
-    #         widget = RollingDisplay(self.changeWidget)
-    #         widget.setStyleSheet(" background-color: rgb(171, 0, 0);")
-    #         self.setCentralWidget(widget)
-    #         print("Keyboard Q was clicked")
-    #     elif event.key() == Qt.Key_W: #When W is pressed, orienting accuracy is 0
-    #         # Detection warning
-    #         # No chamfer detected
-    #         widget = OrientDisplay(self.changeWidget)
-    #         self.setCentralWidget(widget)
-    #         widget.setStyleSheet("background-color: rgb(171, 94, 0);")
-    #         print("Keyboard W was clicked")
-    #     elif event.key() == Qt.Key_A: #When A is pressed, placing accuracy is 0
-    #         # Camera Failure
-    #         # Status.CAMERA_FATAL
-    #         widget = PlacingDisplay(self.changeWidget)
-    #         self.setCentralWidget(widget)  
-    #         widget.setStyleSheet("background-color: rgb(171, 0, 0);")      
-    #         print("Keyboard A was clicked")       
-    #     elif event.key() == Qt.Key_Z: #When Z is pressed, full is 1
-    #         widget = FullDisplay(self.changeWidget)
-    #         self.setCentralWidget(widget)
-    #         widget.setStyleSheet("background-color: rgb(0, 0, 148);") 
-    #         print("Keyboard Z was clicked")
-    #     elif event.key() == Qt.Key_X: #When X is pressed, emergency stop
-    #         widget = EmerStopDisplay()
-    #         self.setCentralWidget(widget)
-    #         widget.setStyleSheet(" background-color: rgb(171, 0, 0);")
-    #         print("Keyboard X was clicked")   
-    #     elif event.key() == Qt.Key_S: #When W is pressed, orienting accuracy is 0
-    #         # Detection warning
-    #         # No part detected
-    #         widget = OrientPartDisplay(self.changeWidget)
-    #         self.setCentralWidget(widget)
-    #         widget.setStyleSheet("background-color: rgb(171, 94, 0);")
-    #         print("Keyboard W was clicked")
-    #     elif event.key() == Qt.Key_C: #When W is pressed, orienting accuracy is 0
-    #         # Pause
-    #         widget = PauseDisplay(self.changeWidget)
-    #         self.setCentralWidget(widget)
-    #         widget.setStyleSheet("background-color: rgb(171, 94, 0);")
-    #         print("Keyboard W was clicked")           
-    #     else: 
-    #         self.proceed()
-    #     event.accept()
-    # def proceed(self):
-    #     print ("Call Enter Key")
-
 class SplashScreen():
     def __init__(self):
         # super(SplashScreen,self).__init__()
@@ -337,7 +288,7 @@ class MainPage(QFrame):
         self.button2.clicked.connect(self.button2_clicked)
 
     def button1_clicked(self):
-        widget = ErrorDisplay()
+        widget = ErrorDisplay(self.callback)
         self.callback(widget)
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         print("Button 1 clicked")
@@ -345,7 +296,7 @@ class MainPage(QFrame):
         print(repr(Status.SET))
 
     def button2_clicked(self):
-        widget = ErrorDisplay()
+        widget = ErrorDisplay(self.callback)
         self.callback(widget)
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         print("Button 2 clicked")
@@ -354,8 +305,9 @@ class MainPage(QFrame):
 
 # Using Keyboard strokes to represent signals coming from the machine
 class ErrorDisplay(QFrame):
-    def __init__(self):
+    def __init__(self, callback):
         super(ErrorDisplay,self).__init__()
+        self.callback = callback
         widget = QWidget(self)
         textLabel = QLabel(widget)
         textLabel.setText("Machine in use")
@@ -366,6 +318,26 @@ class ErrorDisplay(QFrame):
         textLabel.adjustSize()
         widget.setStyleSheet("color: rgb(250, 250, 250);")
         print(repr(Status.IN_USE))
+
+        self.button1 = QPushButton(self)
+        self.button1.setText("Pause")
+        self.button1.move(300,300)
+        self.button1.resize(100, 300)
+        self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
+        border-style: outset; \
+        border-width: 2px;\
+        border-radius: 10px; \
+        border-color: beige; \
+        font: bold 30px; \
+        min-width: 10em; \
+        padding: 6px;")
+        self.button1.clicked.connect(self.button1_clicked)
+
+    def button1_clicked(self):
+        widget = PauseDisplay(self.callback)
+        #print(repr(Status.FIXED))
+        widget.setStyleSheet(" background-color: rgb(171, 94, 0);")
+        self.callback(widget)
 
 class RollingDisplay(QFrame):
     def __init__(self, callback):
@@ -404,7 +376,7 @@ class RollingDisplay(QFrame):
         self.button1.clicked.connect(self.button1_clicked)
 
     def button1_clicked(self):
-        widget = ErrorDisplay()
+        widget = ErrorDisplay(self.callback)
         print(repr(Status.FIXED))
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         self.callback(widget)
@@ -455,7 +427,7 @@ class OrientDisplay(QFrame):
         self.button1.clicked.connect(self.button1_clicked)
 
     def button1_clicked(self):
-        widget = ErrorDisplay()
+        widget = ErrorDisplay(self.callback)
         print(repr(Status.FIXED))
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         self.callback(widget)
@@ -506,7 +478,7 @@ class PlacingDisplay(QFrame):
         self.button1.clicked.connect(self.button1_clicked)
 
     def button1_clicked(self):
-        widget = ErrorDisplay()
+        widget = ErrorDisplay(self.callback)
         print(repr(Status.FIXED))
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         self.callback(widget)
@@ -549,7 +521,7 @@ class FullDisplay(QFrame):
         self.button1.clicked.connect(self.button1_clicked)
 
     def button1_clicked(self):
-        widget = ErrorDisplay()
+        widget = ErrorDisplay(self.callback)
         print(repr(Status.FIXED))
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         self.callback(widget)
@@ -615,7 +587,7 @@ class OrientPartDisplay(QFrame):
         self.button1.clicked.connect(self.button1_clicked)
 
     def button1_clicked(self):
-        widget = ErrorDisplay()
+        widget = ErrorDisplay(self.callback)
         print(repr(Status.FIXED))
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         self.callback(widget)
@@ -650,7 +622,7 @@ class PauseDisplay(QFrame):
         self.button1.clicked.connect(self.button1_clicked)
 
     def button1_clicked(self):
-        widget = ErrorDisplay()
+        widget = ErrorDisplay(self.callback)
         print(repr(Status.FIXED))
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         self.callback(widget)
