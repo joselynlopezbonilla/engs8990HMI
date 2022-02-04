@@ -27,3 +27,12 @@
 
         #ENUM stuff with the errors and success 
         #Noah will create a mini thread and I will try to integrate that with the current code
+
+
+
+
+
+
+
+
+#Create a wrapper class
