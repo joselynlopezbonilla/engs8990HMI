@@ -1,3 +1,4 @@
+from curses.ascii import EM
 import sys
 import time
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QToolButton, QMainWindow, QSplashScreen, QFrame
@@ -52,25 +53,31 @@ def background():
         PART_STATUS = button6_line.get_values()[0]
         
         if prev_rolling != ROLLING_STATUS:
-            APPLICATION.ROLL_ERROR = ROLLING_STATUS
-            print("changing")
+            if ROLLING_STATUS == 1:
+                APPLICATION.ROLL_ERROR = ROLLING_STATUS
+                print("changing")
             prev_rolling = ROLLING_STATUS
         elif prev_orient != ORIENT_STATUS:
-            APPLICATION.ORIENT_ERROR = ORIENT_STATUS
-            print("changing")
+            if ORIENT_STATUS == 1:
+                APPLICATION.ORIENT_ERROR = ORIENT_STATUS
+                print("changing")
             prev_orient = ORIENT_STATUS        
         elif prev_placing != PLACING_STATUS:
-            APPLICATION.PLACING_ERROR = PLACING_STATUS
+            if PLACING_STATUS == 1:
+                APPLICATION.PLACING_ERROR = PLACING_STATUS
             prev_placing = PLACING_STATUS
         elif prev_full != FULL_STATUS:
-            APPLICATION.FULL_SCREEN = FULL_STATUS
+            if FULL_STATUS == 1:
+                APPLICATION.FULL_SCREEN = FULL_STATUS
             prev_full = FULL_STATUS
         elif prev_emergency != EMERGENCY_STATUS:
-            APPLICATION.EMERGENCY_SCREEN = EMERGENCY_STATUS
+            if EMERGENCY_STATUS == 1:
+                APPLICATION.EMERGENCY_SCREEN = EMERGENCY_STATUS
             print("changing")
             prev_emergency = EMERGENCY_STATUS
         elif prev_part != PART_STATUS:
-            APPLICATION.PART_ERROR = PART_STATUS
+            if PART_STATUS == 1:
+                APPLICATION.PART_ERROR = PART_STATUS
             print("changing")
             prev_part = PART_STATUS
         time.sleep(.1)
@@ -540,6 +547,7 @@ class EmerStopDisplay(QFrame):
         textLabel.adjustSize()
         widget.setStyleSheet("color: rgb(250, 250, 250);")
         print(repr(Status.EMERGENCY))
+        QApplication.quit()
 
 class OrientPartDisplay(QFrame):
     def __init__(self, callback):
@@ -609,7 +617,7 @@ class PauseDisplay(QFrame):
 
         self.button1 = QPushButton(self)
         self.button1.setText("Resume")
-        self.button1.move(300,350)
+        self.button1.move(50,300)
         self.button1.resize(100, 300)
         self.button1.setStyleSheet(" background-color: rgb(171, 171, 171); \
         border-style: outset; \
@@ -621,11 +629,29 @@ class PauseDisplay(QFrame):
         padding: 6px;")
         self.button1.clicked.connect(self.button1_clicked)
 
+        self.button2 = QPushButton(self)
+        self.button2.setText("Abort")
+        self.button2.move(500,300)
+        self.button2.resize(100, 300)
+        self.button2.setStyleSheet(" background-color: rgb(171, 171, 171); \
+        border-style: outset; \
+        border-width: 2px;\
+        border-radius: 10px; \
+        border-color: beige; \
+        font: bold 30px; \
+        min-width: 10em; \
+        padding: 6px;")
+        self.button2.clicked.connect(self.button2_clicked)
+
     def button1_clicked(self):
         widget = ErrorDisplay(self.callback)
         print(repr(Status.FIXED))
         widget.setStyleSheet(" background-color: rgb(0, 110, 0);")
         self.callback(widget)
+
+    def button2_clicked(self):
+        print("Abort program")
+        QApplication.quit()
 
 if __name__ == '__main__':
     bg = threading.Thread(name='background', target=background)
